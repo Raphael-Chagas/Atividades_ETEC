@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Cadastro de Produtos</title>
+</head>
+<body>
+
+<h1>Cadastro de Produtos (Array de Objetos)</h1>
+
+<h3>
+Produto <input type="text" id="produto" placeholder="Ex: Mouse"> 
+Preço <input type="number" id="preco" placeholder="Ex: 70.00"> 
+Quantidade <input type="number" id="quantidade" placeholder="Ex: 10">
+
+<button onclick="adicionarProduto()">Adicionar produto</button> 
+<button onclick="listarProdutos()">Listar Produto</button> 
+<button onclick="mostrarResumo()">Resumo</button> 
+<button onclick="limparTudo()">Limpar tudo</button>
+</h3>
+
+<hr>
+
+<h2>Remover por índice</h2>
+<input type="number" id="indiceRemover" placeholder="Ex: 0">
+<button onclick="removerProduto()">Remover</button>
+
+<hr>
+
+<div id="saida"></div>
+
+<script>
+
+let produtos = [];
+
+// ADICIONAR PRODUTO
+function adicionarProduto() {
+
+    let nome = document.getElementById("produto").value;
+    let preco = parseFloat(document.getElementById("preco").value);
+    let quantidade = parseInt(document.getElementById("quantidade").value);
+
+    if(nome === "" || isNaN(preco) || isNaN(quantidade)){
+        alert("Preencha todos os campos corretamente!");
+        return;
+    }
+
+    let produto = {
+        nome: nome,
+        preco: preco,
+        quantidade: quantidade
+    };
+
+    produtos.push(produto);
+
+    document.getElementById("saida").innerHTML =
+        "Produto adicionado. Total cadastrados: " + produtos.length;
+
+    limparCampos();
+}
+
+// LISTAR PRODUTOS
+function listarProdutos(){
+
+    if(produtos.length === 0){
+        document.getElementById("saida").innerHTML =
+            "Nenhum produto cadastrado.";
+        return;
+    }
+
+    let tabela = `
+    <h2>Produtos cadastrados</h2>
+    <table border="1">
+    <tr>
+        <th>Índice</th>
+        <th>Produto</th>
+        <th>Preço (R$)</th>
+        <th>Qtd</th>
+        <th>Subtotal (R$)</th>
+    </tr>`;
+
+    produtos.forEach((p, index) => {
+        tabela += `
+        <tr>
+            <td>${index}</td>
+            <td>${p.nome}</td>
+            <td>${p.preco.toFixed(2)}</td>
+            <td>${p.quantidade}</td>
+            <td>${(p.preco * p.quantidade).toFixed(2)}</td>
+        </tr>`;
+    });
+
+    tabela += "</table>";
+
+    document.getElementById("saida").innerHTML = tabela;
+}
+
+// RESUMO
+function mostrarResumo(){
+
+    if(produtos.length === 0){
+        document.getElementById("saida").innerHTML =
+            "Nenhum produto para resumir.";
+        return;
+    }
+
+    let totalProdutos = produtos.length;
+    let totalItens = 0;
+    let valorTotal = 0;
+
+    produtos.forEach(p => {
+        totalItens += p.quantidade;
+        valorTotal += p.preco * p.quantidade;
+    });
+
+    document.getElementById("saida").innerHTML = `
+        <h2>Resumo</h2>
+        Total de produtos (linhas): ${totalProdutos} <br><br>
+        Total de itens (somando quantidades): ${totalItens} <br><br>
+        Valor total do estoque: R$ ${valorTotal.toFixed(2)}
+    `;
+}
+
+// REMOVER PRODUTO
+function removerProduto(){
+
+    let indice = parseInt(document.getElementById("indiceRemover").value);
+
+    if(isNaN(indice) || indice < 0 || indice >= produtos.length){
+        alert("Índice inválido!");
+        return;
+    }
+
+    produtos.splice(indice, 1);
+
+    if(produtos.length === 0){
+        document.getElementById("saida").innerHTML =
+            "Todos os produtos foram removidos.";
+    } else {
+        listarProdutos();
+    }
+}
+
+// LIMPAR TUDO
+function limparTudo(){
+    produtos = [];
+    document.getElementById("saida").innerHTML =
+        "Todos os produtos foram removidos.";
+}
+
+// LIMPAR CAMPOS
+function limparCampos(){
+    document.getElementById("produto").value = "";
+    document.getElementById("preco").value = "";
+    document.getElementById("quantidade").value = "";
+}
+
+</script>
+
+</body>
+</html>
