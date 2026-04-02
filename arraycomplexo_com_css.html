@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Produtos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f9;
+            padding: 20px;
+            text-align: center; 
+            color: #2c3e50;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border: 1px solid #d1d9e0;
+            padding: 30px;
+            width: 500px;
+            margin: 0 auto; 
+            border-radius: 4px;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #1a5a96;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            margin: 8px auto 15px auto; 
+            padding: 10px;
+            display: block; 
+            width: 250px; 
+            border: 1px solid #adc5d9;
+            border-radius: 3px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1a5a96;
+            background-color: #f0f7ff;
+        }
+
+        .botoes {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            cursor: pointer;
+            padding: 8px 16px;
+            margin: 4px;
+            font-size: 13px;
+            border: 1px solid #1a5a96;
+            background-color: #ffffff;
+            color: #1a5a96;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #1a5a96;
+            color: #ffffff;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #d1d9e0;
+            padding: 10px;
+            text-align: center; 
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #e6f0f7;
+            color: #1a5a96;
+        }
+
+        #saida {
+            margin-top: 20px;
+            padding: 15px;
+            border-top: 2px solid #e6f0f7;
+            font-size: 14px;
+            color: #455a64;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #d1d9e0;
+            margin: 20px 0;
+        }
+
+        h3 {
+            font-size: 16px;
+            color: #1a5a96;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Cadastro de Produtos</h1>
+
+    <form onsubmit="event.preventDefault(); adicionarProduto();">
+        <div style="display: inline-block; text-align: left;">
+            <label>Produto:</label>
+            <input type="text" id="produto" placeholder="Nome do item" required>
+            
+            <label>Preço (R$):</label>
+            <input type="number" id="preco" placeholder="0.00" min="0" step="0.01" required>
+            
+            <label>Quantidade:</label>
+            <input type="number" id="quantidade" placeholder="0" min="0" required>
+        </div>
+
+        <div class="botoes">
+            <button type="submit">ADICIONAR</button> 
+            <button type="button" onclick="listarProdutos()">LISTAR</button> 
+            <button type="button" onclick="mostrarResumo()">RESUMO</button> 
+            <button type="button" onclick="limparTudo()">LIMPAR TUDO</button>
+        </div>
+    </form>
+
+    <hr>
+
+    <h3>Remover por índice</h3>
+    <input type="number" id="indiceRemover" style="width: 80px; display: inline-block; margin: 0;" min="0" placeholder="ID">
+    <button type="button" onclick="removerProduto()">REMOVER</button>
+
+    <div id="saida">Sistema pronto para uso.</div>
+</div>
+
+<script>
+let produtos = [];
+
+function adicionarProduto() {
+    let nome = document.getElementById("produto").value;
+    let preco = parseFloat(document.getElementById("preco").value);
+    let quantidade = parseInt(document.getElementById("quantidade").value);
+    
+    produtos.push({nome, preco, quantidade});
+    document.getElementById("saida").innerHTML = "<b>Sucesso:</b> " + nome + " adicionado.";
+    limparCampos();
+}
+
+function listarProdutos(){
+    if(produtos.length === 0){
+        document.getElementById("saida").innerHTML = "Nenhum produto em estoque.";
+        return;
+    }
+    
+    let tabela = `<table>
+    <tr><th>ID</th><th>Nome</th><th>Preço</th><th>Qtd</th></tr>`;
+    
+    produtos.forEach((p, index) => {
+        tabela += `<tr>
+            <td>${index}</td>
+            <td>${p.nome}</td>
+            <td>R$ ${p.preco.toFixed(2)}</td>
+            <td>${p.quantidade}</td>
+        </tr>`;
+    });
+    
+    tabela += "</table>";
+    document.getElementById("saida").innerHTML = tabela;
+}
+
+function mostrarResumo(){
+    if(produtos.length === 0) return;
+    let totalItens = 0;
+    let valorTotal = 0;
+    produtos.forEach(p => {
+        totalItens += p.quantidade;
+        valorTotal += p.preco * p.quantidade;
+    });
+    
+    document.getElementById("saida").innerHTML = `
+        <strong>Total de itens:</strong> ${totalItens} <br>
+        <strong>Patrimônio total:</strong> R$ ${valorTotal.toFixed(2)}
+    `;
+}
+
+function removerProduto(){
+    let indice = parseInt(document.getElementById("indiceRemover").value);
+    if(isNaN(indice) || indice < 0 || indice >= produtos.length){
+        alert("ID inválido!");
+        return;
+    }
+    produtos.splice(indice, 1);
+    listarProdutos();
+}
+
+function limparTudo(){
+    if(confirm("Deseja apagar todos os registros?")){
+        produtos = [];
+        document.getElementById("saida").innerHTML = "Base de dados limpa.";
+    }
+}
+
+function limparCampos(){
+    document.getElementById("produto").value = "";
+    document.getElementById("preco").value = "";
+    document.getElementById("quantidade").value = "";
+}
+</script>
+
+</body>
+</html>
