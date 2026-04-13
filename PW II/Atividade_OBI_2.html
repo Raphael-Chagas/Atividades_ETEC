@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Atividade da OBI -- 2</title>
+</head>
+<body>
+<script>
+function contarPares(vetor) {
+  let pares = 0;
+  for (let i = 0; i < vetor.length; i++) {
+    if (vetor[i] % 2 === 0) {
+      pares++;
+    }
+  }
+  return pares;
+}
+let resultado2 = contarPares([2, 3, 4, 7, 10]);
+console.log(resultado2, "números pares"); // 3
+</script>
+</body>
+</html>

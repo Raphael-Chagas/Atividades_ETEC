@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Atividade da OBI -- 1</title>
+</head>
+<body>
+<script>
+function maiorValor(vetor) {
+  let maior = vetor[0];
+  let posicao = 0;
+  for (let i = 1; i < vetor.length; i++) {
+    if (vetor[i] > maior) {
+      maior = vetor[i];
+      posicao = i;
+    }
+  }
+  return {
+    maior: maior,
+    posicao: posicao
+  };
+}
+let resultado1 = maiorValor([5, 9, 2, 9, 1]);
+console.log(resultado1);
+</script>
+</body>
+</html>
